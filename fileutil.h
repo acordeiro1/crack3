@@ -21,3 +21,6 @@ char * substringSearch2D(char *target, char (*arr)[COLS], int size);
 void freeAA(char ** arr, int size);
 
 void free2D(char (*arr)[COLS]);
+
+//Linear search for string compare
+int strsearch(const void *target, const void *elem);

@@ -114,3 +114,13 @@ void freeAA(char ** arr, int size)
     }
 	free(arr);
 }
+
+int strsearch(const void *target, const void *elem)
+{
+    char *tt = (char *)target;
+    char **ee = (char **)elem;
+
+    printf("Looking at %s\n", *ee);
+    
+    return strcmp(tt, *ee);
+}
