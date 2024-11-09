@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     //   Uncomment the appropriate statement.
     int size;
     //char (*hashes)[HASH_LEN] = loadFile(argv[1], &size);
-    char **hashes = loadFile(argv[1], &size);
+    char **hashes = loadFileAA(argv[1], &size);
     
     // CHALLENGE1: Sort the hashes using qsort.
     qsort(hashes, size, sizeof(char*), compareHashes);
@@ -59,16 +59,16 @@ int main(int argc, char *argv[])
     while (fgets(password, sizeof(password), passFile) != NULL) 
     {
         size_t length = strlen(password);
-        if (length > 0 && buffer[length - 1] == '\n') 
+        if (length > 0 && password[length - 1] == '\n') 
         {
-            buffer[length - 1] = '\0';
+            password[length - 1] = '\0';
         }
 
         //hash
         char *hash = md5(password, strlen(password)); 
 
         // CHALLENGE1: Use binary search instead of linear search.
-        if (arraySearch(hashes, size, hash) != -1) 
+        if (substringSearchAA(hash, hashes, size) != NULL) 
         { 
             printf("Found password: %s with hash: %s\n", password, hash);
             hashesFound++;
