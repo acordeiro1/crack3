@@ -11,6 +11,13 @@
 #define PASS_LEN 50     // Maximum length any password will be.
 #define HASH_LEN 33     // Length of hash plus one for null.
 
+int compareHashes(const void *a, const void *b) 
+{
+    char **aa = (char **)a;
+    char **bb = (char **)b;
+
+    return strcmp(*aa, *bb);
+}
 
 int main(int argc, char *argv[])
 {
@@ -26,23 +33,64 @@ int main(int argc, char *argv[])
     //   Uncomment the appropriate statement.
     int size;
     //char (*hashes)[HASH_LEN] = loadFile(argv[1], &size);
-    //char **hashes = loadFile(argv[1], &size);
+    char **hashes = loadFile(argv[1], &size);
     
     // CHALLENGE1: Sort the hashes using qsort.
+    qsort(hashes, size, sizeof(char*), compareHashes);
     
     // TODO
     // Open the password file for reading.
+    FILE *passFile = fopen(argv[2], "r");
+    if (!passFile)
+    {
+        printf("Can't open file\n");
+        free(hashes);
+        exit(1);
+    }
+
+    char password[PASS_LEN];
+    int hashesFound = 0;
 
     // TODO
     // For each password, hash it, then use the array search
     // function from fileutil.h to find the hash.
     // If you find it, display the password and the hash.
     // Keep track of how many hashes were found.
-    // CHALLENGE1: Use binary search instead of linear search.
+    while (fgets(password, sizeof(password), passFile) != NULL) 
+    {
+        size_t length = strlen(password);
+        if (length > 0 && buffer[length - 1] == '\n') 
+        {
+            buffer[length - 1] = '\0';
+        }
 
+        //hash
+        char *hash = md5(password, strlen(password)); 
+
+        // CHALLENGE1: Use binary search instead of linear search.
+        if (arraySearch(hashes, size, hash) != -1) 
+        { 
+            printf("Found password: %s with hash: %s\n", password, hash);
+            hashesFound++;
+        }
+
+        free(hash); 
+    }
+    
     // TODO
     // When done with the file:
     //   Close the file
+    fclose(passFile);
+
     //   Display the number of hashes found.
+    printf("Total hashes found: %d\n", hashesFound);
+
     //   Free up memory.
+    for (int i = 0; i < size; i++) {
+        free(hashes[i]);
+    }
+    free(hashes);
+
+    return 0;
+
 }
